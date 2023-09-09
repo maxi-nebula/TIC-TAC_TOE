@@ -1,5 +1,8 @@
 /** @format */
-
+@font-face {
+  font-family: "coolFont";
+  src: url(./images-fonts/funtime.otf);
+}
 .container {
   display: grid;
   grid-template-rows: 100px 700px;
@@ -7,11 +10,26 @@
   border: 2px solid gray;
 }
 
+.printedMarker {
+  font-family: "coolFont";
+  font-size: 2rem;
+  font-weight: 900;
+}
+
 .markers {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
   border: 2px solid gray;
+  visibility: hidden;
+}
+
+.markers-show {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  border: 2px solid gray;
+  visibility: visible;
 }
 .button_markers {
   width: 200px;
@@ -20,7 +38,13 @@
   font-weight: 900;
   font-size: 1.5rem;
 }
-
+.button_markers_start {
+  width: 200px;
+  height: 50px;
+  border-radius: 5px;
+  font-weight: 900;
+  font-size: 1.5rem;
+}
 .board {
   display: flex;
   justify-content: space-around;
@@ -46,7 +70,7 @@ p {
 }
 
 .parent > div {
-  font-family: sans-serif;
-  font-size: 24px;
+  font-family: "coolFont";
+  font-size: 2.5rem;
   font-weight: bold;
 }
