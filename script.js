@@ -7,14 +7,14 @@ const gamePositions = ["g1", "g2", "g3", "g4", "g5", "g6", "g7", "g8", "g9"];
 const xArray = [];
 const oArray = [];
 const winningConditions = [
-  ["g1", "g2", "g3"],
-  ["g1", "g4", "g7"],
-  ["g1", "g5", "g9"],
-  ["g2", "g5", "g8"],
-  ["g4", "g5", "g6"],
-  ["g6", "g3", "g9"],
-  ["g7", "g8", "g9"],
-  ["g7", "g5", "g3"],
+  ["1", "2", "3"],
+  ["1", "4", "7"],
+  ["1", "5", "9"],
+  ["2", "5", "8"],
+  ["3", "6", "9"],
+  ["3", "5", "7"],
+  ["4", "5", "6"],
+  ["7", "8", "9"],
 ];
 
 startButton.addEventListener("click", () => {
@@ -55,18 +55,46 @@ playGame = (C) => {
   const markerArray = [];
   grids.forEach((grid) => {
     grid.addEventListener("click", () => {
-      printMarker(grid, C.pMarker);
+      printPlayerMarker(grid, C.pMarker);
     });
   });
 
-  printMarker = (gr) => {
+  printPlayerMarker = (gr) => {
     gr.innerHTML = `${C.pMarker}`;
     let availablePositions = removePosition(gamePositions, gr.id);
-    xArray.push(gr.id);
+    xArray.push(gr.id.slice(-1));
 
     chooseNextPosition(availablePositions, gr.id);
+    console.log(xArray);
+
+    checkConditions(xArray);
 
     return xArray;
+  };
+
+  checkConditions = (xA) => {
+    let tempC = [];
+    let i = 0;
+    let count = 0;
+
+    for (i = 0; i < winningConditions.length; i++) {
+      tempC = winningConditions[i];
+
+      if (xA.length >= 3) {
+        xA = xA.sort();
+        console.log(
+          `the user array is ${xA} and the testing array is ${tempC}`
+        );
+
+        arrayEquals = (xA, tempC) => {
+          return JSON.stringify(xA) === JSON.stringify(tempC);
+        };
+
+        if (arrayEquals(xA, tempC)) {
+          console.log("TRUE");
+        }
+      }
+    }
   };
 
   //choose postion starts here
@@ -218,32 +246,6 @@ playGame = (C) => {
         playGameBot(finalPosition, C.bMarker, avPositions);
       }
     }
-
-    checkWinner = () => {
-      const A = [];
-      const MarkedDivs = document.querySelectorAll(".item");
-      console.log(MarkedDivs);
-
-      MarkedDivs.forEach((div) => {
-        if (div.innerHTML == "X") {
-          A.push(div.id);
-        }
-      });
-      console.log(A);
-
-      return A;
-    };
-
-    const A1 = checkWinner();
-    compareArrays(A1, winningConditions);
-
-    compareArrays = (A, winningConditions) => {
-      winningConditions.forEach((condition) => {
-        if (condition == A) {
-          console.log("Winner");
-        }
-      });
-    };
   };
 
   //choose position function ends here
@@ -264,7 +266,6 @@ playGame = (C) => {
   };
 
   printBotMarker = (botPosition, botMarker, availablePos) => {
-    oArray.push(botPosition);
     botMarkerPosition = document.getElementById(`${botPosition}`);
 
     botMarkerPosition.innerHTML = `${botMarker}`;
