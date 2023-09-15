@@ -65,36 +65,53 @@ playGame = (C) => {
     xArray.push(gr.id.slice(-1));
 
     chooseNextPosition(availablePositions, gr.id);
-    console.log(xArray);
 
-    checkConditions(xArray);
+    checkConditions(xArray, C.pMarker);
 
     return xArray;
   };
 
-  checkConditions = (xA) => {
+  checkConditions = (A, Marker) => {
     let tempC = [];
     let i = 0;
-    let count = 0;
 
     for (i = 0; i < winningConditions.length; i++) {
       tempC = winningConditions[i];
 
-      if (xA.length >= 3) {
-        xA = xA.sort();
-        console.log(
-          `the user array is ${xA} and the testing array is ${tempC}`
-        );
+      if (A.length >= 3) {
+        A = A.sort();
 
-        arrayEquals = (xA, tempC) => {
-          return JSON.stringify(xA) === JSON.stringify(tempC);
+        arrayEquals = (A, tempC, Marker) => {
+          let count = 0;
+          let aStringified = JSON.stringify(A);
+          let tempcStringified = JSON.stringify(tempC);
+
+          if (aStringified.length == tempcStringified.length) {
+            if (aStringified == tempcStringified) {
+              announceWinner(Marker);
+            }
+          } else {
+            for (let i = 0; i < A.length; i++) {
+              for (let j = 0; j < tempC.length; j++) {
+                if (tempC[j] == A[i]) {
+                  count = count + 1;
+                }
+              }
+            }
+
+            if (count >= 3) {
+              announceWinner(Marker);
+            }
+          }
         };
 
-        if (arrayEquals(xA, tempC)) {
-          console.log("TRUE");
-        }
+        arrayEquals(A, tempC, Marker);
       }
     }
+  };
+
+  announceWinner = (marker) => {
+    console.log(`${marker} is the winner`);
   };
 
   //choose postion starts here
@@ -267,10 +284,13 @@ playGame = (C) => {
 
   printBotMarker = (botPosition, botMarker, availablePos) => {
     botMarkerPosition = document.getElementById(`${botPosition}`);
+    oArray.push(botPosition.slice(-1));
+    console.log(oArray);
 
     botMarkerPosition.innerHTML = `${botMarker}`;
 
     removePosition(availablePos, botPosition);
+    checkConditions(oArray, botMarker);
 
     return oArray;
   };
