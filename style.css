@@ -5,7 +5,8 @@
 }
 .container {
   display: grid;
-  grid-template-rows: 100px 700px;
+  padding: 20px;
+  grid-template-rows: 100px 50px 700px;
 
   border: 2px solid gray;
 }
@@ -73,4 +74,10 @@ p {
   font-family: "coolFont";
   font-size: 2.5rem;
   font-weight: bold;
+}
+
+.winnerDiv {
+  font-weight: 900;
+  font-size: 2rem;
+  text-align: center;
 }

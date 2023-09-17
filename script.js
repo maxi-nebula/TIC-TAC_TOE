@@ -1,11 +1,12 @@
 /** @format */
 
+/*declaration of global variables */
 const startButton = document.getElementById("startbutton");
 
 const markerButtons = document.querySelectorAll(".button_markers");
 const gamePositions = ["g1", "g2", "g3", "g4", "g5", "g6", "g7", "g8", "g9"];
-const xArray = [];
-const oArray = [];
+let xArray = [];
+let oArray = [];
 const winningConditions = [
   ["1", "2", "3"],
   ["1", "4", "7"],
@@ -17,48 +18,60 @@ const winningConditions = [
   ["7", "8", "9"],
 ];
 
+/*Starting the game */
 startButton.addEventListener("click", () => {
-  const markerDiv = document.querySelector(".markers");
+  if (startButton.innerHTML == "Start") {
+    const markerDiv = document.querySelector(".markers");
 
-  markerDiv.classList.replace("markers", "markers-show");
+    markerDiv.classList.replace("markers", "markers-show");
 
-  markerButtons.forEach((b) => {
-    b.addEventListener("click", () => {
-      const current = setMarkers(b);
+    markerButtons.forEach((b) => {
+      b.addEventListener("click", () => {
+        const current = setMarkers(b);
+        startButton.innerHTML = "Restart";
 
-      playGame(current);
+        playGame(current);
+      });
     });
-  });
 
-  setMarkers = (b) => {
-    markerDiv.classList.replace("markers-show", "markers");
-    if (b.innerHTML == "X") {
-      let pMarker = "X";
-      let pName = "Player";
-      let bMarker = "O";
-      let bName = "bot";
+    setMarkers = (b) => {
+      markerDiv.classList.replace("markers-show", "markers");
+      if (b.innerHTML == "X") {
+        let pMarker = "X";
+        let pName = "Player";
+        let bMarker = "O";
+        let bName = "bot";
 
-      return { pMarker, pName, bMarker, bName };
-    } else if (b.innerHTML == "O") {
-      let pMarker = "O";
-      let pName = "Player";
-      let bMarker = "X";
-      let bName = "bot";
+        return { pMarker, pName, bMarker, bName };
+      } else if (b.innerHTML == "O") {
+        let pMarker = "O";
+        let pName = "Player";
+        let bMarker = "X";
+        let bName = "bot";
 
-      return { pMarker, pName, bMarker, bName };
-    }
-  };
+        return { pMarker, pName, bMarker, bName };
+      }
+    };
+  } else if (startButton.innerHTML == "Restart") {
+    clearArray();
+  }
+
+  /*Setting marker */
 });
 
+/*clearing board and restarting game */
+
+/*Playing game begins here */
 playGame = (C) => {
   const grids = document.querySelectorAll(".item");
   const markerArray = [];
   grids.forEach((grid) => {
     grid.addEventListener("click", () => {
-      printPlayerMarker(grid, C.pMarker);
+      const playerReturn = printPlayerMarker(grid, C.pMarker);
     });
   });
 
+  /*Printing player marker */
   printPlayerMarker = (gr) => {
     gr.innerHTML = `${C.pMarker}`;
     let availablePositions = removePosition(gamePositions, gr.id);
@@ -70,6 +83,15 @@ playGame = (C) => {
 
     return xArray;
   };
+
+  clearArray = () => {
+    console.log(`inside clear array ${xArray} and ${oArray}`);
+    xArray = [];
+    oArray = [];
+    console.log(`after clearing arrays ${xArray} and ${oArray}`);
+    window.location.reload(true);
+  };
+  /*Checking conditions to see if there is a winner */
 
   checkConditions = (A, Marker) => {
     let tempC = [];
@@ -112,6 +134,15 @@ playGame = (C) => {
 
   announceWinner = (marker) => {
     console.log(`${marker} is the winner`);
+    const para = document.createElement("p");
+    const node = document.createTextNode(`${marker} is the Winner`);
+    para.appendChild(node);
+    const winnerDiv = document.getElementById("winnerDiv");
+    console.log(winnerDiv);
+    winnerDiv.classList.add("winnerDiv");
+    winnerDiv.appendChild(para);
+
+    startButton.innerHTML = "Restart";
   };
 
   //choose postion starts here
@@ -264,7 +295,14 @@ playGame = (C) => {
       }
     }
   };
+  clearBoard = () => {
+    let mD = document.querySelectorAll(".item");
+    mD.forEach((d) => {
+      d.innerHTML = "";
+    });
 
+    startButton.innerHTML = "start";
+  };
   //choose position function ends here
   removePosition = (gmPositions, gR) => {
     if (gmPositions.includes(gR)) {
@@ -279,7 +317,7 @@ playGame = (C) => {
   };
 
   playGameBot = (fP, bM, availablePos) => {
-    printBotMarker(fP, bM, availablePos);
+    const botReturn = printBotMarker(fP, bM, availablePos);
   };
 
   printBotMarker = (botPosition, botMarker, availablePos) => {
