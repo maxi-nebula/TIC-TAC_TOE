@@ -74,21 +74,24 @@ playGame = (C) => {
   /*Printing player marker */
   printPlayerMarker = (gr) => {
     gr.innerHTML = `${C.pMarker}`;
-    let availablePositions = removePosition(gamePositions, gr.id);
+    console.log(`chosen grid is ${gr.id}`);
     xArray.push(gr.id.slice(-1));
+    let availablePositions = removePosition(gamePositions, gr.id);
+    const trigger = checkConditions(xArray, C.pMarker);
 
+    if (trigger == 1) {
+      return;
+    }
     chooseNextPosition(availablePositions, gr.id);
-
-    checkConditions(xArray, C.pMarker);
+    console.log(xArray);
 
     return xArray;
   };
 
   clearArray = () => {
-    console.log(`inside clear array ${xArray} and ${oArray}`);
     xArray = [];
     oArray = [];
-    console.log(`after clearing arrays ${xArray} and ${oArray}`);
+
     window.location.reload(true);
   };
   /*Checking conditions to see if there is a winner */
@@ -96,6 +99,7 @@ playGame = (C) => {
   checkConditions = (A, Marker) => {
     let tempC = [];
     let i = 0;
+    let stopTrigger = 0;
 
     for (i = 0; i < winningConditions.length; i++) {
       tempC = winningConditions[i];
@@ -105,12 +109,15 @@ playGame = (C) => {
 
         arrayEquals = (A, tempC, Marker) => {
           let count = 0;
+
           let aStringified = JSON.stringify(A);
           let tempcStringified = JSON.stringify(tempC);
 
           if (aStringified.length == tempcStringified.length) {
+            stopTrigger = 1;
             if (aStringified == tempcStringified) {
-              announceWinner(Marker);
+              stopTrigger = 1;
+              announceWinner(Marker, stopTrigger);
             }
           } else {
             for (let i = 0; i < A.length; i++) {
@@ -120,9 +127,9 @@ playGame = (C) => {
                 }
               }
             }
-
             if (count >= 3) {
-              announceWinner(Marker);
+              stopTrigger = 1;
+              announceWinner(Marker, stopTrigger);
             }
           }
         };
@@ -130,15 +137,16 @@ playGame = (C) => {
         arrayEquals(A, tempC, Marker);
       }
     }
+
+    return stopTrigger;
   };
 
   announceWinner = (marker) => {
-    console.log(`${marker} is the winner`);
     const para = document.createElement("p");
     const node = document.createTextNode(`${marker} is the Winner`);
     para.appendChild(node);
     const winnerDiv = document.getElementById("winnerDiv");
-    console.log(winnerDiv);
+
     winnerDiv.classList.add("winnerDiv");
     winnerDiv.appendChild(para);
 
@@ -151,6 +159,7 @@ playGame = (C) => {
     let finalPosition = "";
 
     const levels = ["easy", "tough"];
+    // const levels = ["tough"];
     const randomLevel = levels[Math.floor(levels.length * Math.random())];
 
     if (randomLevel == "easy") {
@@ -161,20 +170,6 @@ playGame = (C) => {
       playGameBot(finalPosition, C.bMarker, avPositions);
     } else {
       if (grId == "g1" || grId == "g3" || grId == "g7" || grId == "g9") {
-        /*const chosenPosition =
-          avPositions[Math.floor(avPositions.length * Math.random())];
-        const lastDigit = chosenPosition.slice(-1);
-
-        if (lastDigit % 2 == 0) {
-          finalPosition = `g${parseInt(lastDigit) + 1}`;
-
-          playGameBot(finalPosition, C.bMarker, avPositions);
-        } else {
-          finalPosition = chosenPosition;
-
-          playGameBot(finalPosition, C.bMarker, avPositions);
-        }*/
-
         let tempArray = [];
         avPositions.forEach((position) => {
           if (
@@ -187,14 +182,14 @@ playGame = (C) => {
           }
         });
         if (tempArray != []) {
-          const finalPosition =
+          finalPosition =
             tempArray[Math.floor(tempArray.length * Math.random())];
 
           playGameBot(finalPosition, C.bMarker, avPositions);
         } else {
-          const finalPosition =
+          finalPosition =
             avPositions[Math.floor(avPositions.length * Math.random())];
-          finalPosition = chosenPosition;
+
           playGameBot(finalPosition, C.bMarker, avPositions);
         }
       } else if (grId == "g2") {
@@ -210,13 +205,13 @@ playGame = (C) => {
           }
         });
         if (tempArray != []) {
-          const finalPosition =
+          finalPosition =
             tempArray[Math.floor(tempArray.length * Math.random())];
           playGameBot(finalPosition, C.bMarker, avPositions);
         } else {
-          const finalPosition =
+          finalPosition =
             avPositions[Math.floor(avPositions.length * Math.random())];
-          finalPosition = chosenPosition;
+          // finalPosition = chosenPosition;
           playGameBot(finalPosition, C.bMarker, avPositions);
         }
       } else if (grId == "g8") {
@@ -232,13 +227,13 @@ playGame = (C) => {
           }
         });
         if (tempArray != []) {
-          const finalPosition =
+          finalPosition =
             tempArray[Math.floor(tempArray.length * Math.random())];
           playGameBot(finalPosition, C.bMarker, avPositions);
         } else {
           const finalPosition =
             avPositions[Math.floor(avPositions.length * Math.random())];
-          finalPosition = chosenPosition;
+          //finalPosition = chosenPosition;
           playGameBot(finalPosition, C.bMarker, avPositions);
         }
       } else if (grId == "g4") {
@@ -254,13 +249,14 @@ playGame = (C) => {
           }
         });
         if (tempArray != []) {
-          const finalPosition =
+          finalPosition =
             tempArray[Math.floor(tempArray.length * Math.random())];
+
           playGameBot(finalPosition, C.bMarker, avPositions);
         } else {
           const finalPosition =
             avPositions[Math.floor(avPositions.length * Math.random())];
-          finalPosition = chosenPosition;
+
           playGameBot(finalPosition, C.bMarker, avPositions);
         }
       } else if (grId == "g6") {
@@ -275,21 +271,23 @@ playGame = (C) => {
             tempArray.push(position);
           }
         });
+
         if (tempArray != []) {
-          const finalPosition =
+          finalPosition =
             tempArray[Math.floor(tempArray.length * Math.random())];
 
           playGameBot(finalPosition, C.bMarker, avPositions);
         } else {
-          const finalPosition =
+          finalPosition =
             avPositions[Math.floor(avPositions.length * Math.random())];
-          finalPosition = chosenPosition;
+          //     finalPosition = chosenPosition;
+
           playGameBot(finalPosition, C.bMarker, avPositions);
         }
       } else if (grId == "g5") {
-        const chosenPosition =
+        finalPosition =
           avPositions[Math.floor(avPositions.length * Math.random())];
-        finalPosition = chosenPosition;
+        //  finalPosition = chosenPosition;
 
         playGameBot(finalPosition, C.bMarker, avPositions);
       }
@@ -323,7 +321,6 @@ playGame = (C) => {
   printBotMarker = (botPosition, botMarker, availablePos) => {
     botMarkerPosition = document.getElementById(`${botPosition}`);
     oArray.push(botPosition.slice(-1));
-    console.log(oArray);
 
     botMarkerPosition.innerHTML = `${botMarker}`;
 
@@ -338,4 +335,5 @@ playGame = (C) => {
     // checkCombinations(alreadyMarkedArray);
     return alreadyMarkedArray;
   };
+  return;
 };
